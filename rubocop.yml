@@ -1,8 +1,0 @@
-AllCops:
-  RunRailsCops: true
-  Exclude:
-    - 'db/**/*'
-    - 'db/schema.rb'
-    - 'config/**/*'
-  Documentation:
-    Enabled: false
