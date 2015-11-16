@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  def new_session_path(scope)
-    new_user_session_path
+  def new_session_path(_scope)
+    root_path
   end
 end
