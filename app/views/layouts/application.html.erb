@@ -38,7 +38,7 @@
             <% if user_signed_in? %>
               <li><%= link_to("Sign out", destroy_user_session_path, method: :delete, id: "sign_in") %></li>
             <% else %>
-              <li><%= link_to("Sign in", user_omniauth_authorize_path(:mit_oauth2), id: "sign_in") %></li>
+              <li><%= link_to("Sign in", user_mit_oauth2_omniauth_authorize_path, id: "sign_in") %></li>
             <% end %>
           </ul>
         </div>
@@ -65,7 +65,7 @@
       </div><!--/row-->
 
       <footer>
-        <p>&copy; MIT Libraries 2015</p>
+        <p>&copy; MIT Libraries 2016</p>
       </footer>
 
     </div> <!-- /container -->
