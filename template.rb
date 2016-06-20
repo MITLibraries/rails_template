@@ -15,6 +15,7 @@ def apply_template
   update_secrets
 
   copy_file 'app/controllers/application_controller.rb', force: true
+  copy_file 'app/assets/stylesheets/layout.css.erb', force: true
 
   generate(:controller, 'static home')
 
