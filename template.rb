@@ -6,7 +6,7 @@ def apply_template
 
   copy_file 'Gemfile.tt', 'Gemfile', force: true
 
-  create_file '.ruby-version', '2.2.3'
+  create_file '.ruby-version', '2.3.1'
   copy_file '.rubocop.yml'
   copy_file 'LICENSE.md'
 
@@ -15,13 +15,14 @@ def apply_template
   update_secrets
 
   copy_file 'app/controllers/application_controller.rb', force: true
+  copy_file 'app/assets/stylesheets/layout.css.erb', force: true
 
   generate(:controller, 'static home')
 
   copy_file 'app/controllers/users/omniauth_callbacks_controller.rb'
 
   create_file 'Procfile' do
-    'web: bundle exec passenger start -p $PORT --max-pool-size 3'
+    'web: bundle exec puma -C config/puma.rb'
   end
 
   gsub_file 'Rakefile', /will automatically be/, 'will be'
@@ -67,6 +68,10 @@ end
 
 def add_routes
   copy_file 'config/routes.rb', force: true
+end
+
+def add_puma
+  copy_file 'config/puma.rb', force: true
 end
 
 def add_tests
