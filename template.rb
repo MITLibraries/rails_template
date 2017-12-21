@@ -6,11 +6,20 @@ def apply_template
 
   copy_file 'Gemfile.tt', 'Gemfile', force: true
 
-  create_file '.ruby-version', '2.3.1'
+  create_file '.ruby-version', '2.4.2'
   copy_file '.rubocop.yml'
   copy_file 'LICENSE.md'
 
   copy_file 'app/views/layouts/application.html.erb', force: true
+  copy_file 'app/views/layouts/_breadcrumbs.html.erb'
+  copy_file 'app/views/layouts/_flash.html.erb'
+  copy_file 'app/views/layouts/_global_alert.html.erb'
+  copy_file 'app/views/layouts/_google_analytics.html.erb'
+  copy_file 'app/views/layouts/_head.html.erb'
+  copy_file 'app/views/layouts/_institute_footer.html.erb'
+  copy_file 'app/views/layouts/_site_footer.html.erb'
+  copy_file 'app/views/layouts/_site_header.html.erb'
+  copy_file 'app/assets/images/favicon.ico'
 
   update_secrets
 
@@ -34,13 +43,12 @@ def apply_template
   create_file '.env'
 
   after_bundle do
-    generate 'bootstrap:install --no-coffeescript'
     devise_user
     add_routes
     add_tests
     db_migrate
-    run 'annotate'
-    run 'rubocop -a'
+    run 'bundle exec annotate'
+    run 'bundle exec rubocop -a'
     git_commit
   end
 end
@@ -98,16 +106,21 @@ end
 # copy_file and template resolve against our source files. If this file was
 # invoked remotely via HTTP, that means the files are not present locally.
 # In that case, use `git clone` to download them to a local temporary dir.
-# https://github.com/mattbrictson/rails-template/blob/master/template.rb#L56-L72
+# https://github.com/mattbrictson/rails-template/blob/master/template.rb#L65-L86
 def add_template_repository_to_source_path
   if __FILE__ =~ %r{\Ahttps?://}
-    source_paths.unshift(tempdir = Dir.mktmpdir('rails-template-'))
+    require "tmpdir"
+    source_paths.unshift(tempdir = Dir.mktmpdir("rails-template-"))
     at_exit { FileUtils.remove_entry(tempdir) }
-    git clone: [
-      '--quiet',
-      'https://github.com/MITLibraries/rails_template.git',
+    git :clone => [
+      "--quiet",
+      "https://github.com/MITLibraries/rails_template.git",
       tempdir
-    ].map(&:shellescape).join(' ')
+    ].map(&:shellescape).join(" ")
+
+    if (branch = __FILE__[%r{rails-template/(.+)/template.rb}, 1])
+      Dir.chdir(tempdir) { git :checkout => branch }
+    end
   else
     source_paths.unshift(File.dirname(__FILE__))
   end
