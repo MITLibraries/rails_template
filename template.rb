@@ -26,8 +26,6 @@ def apply_template
   copy_file 'app/controllers/application_controller.rb', force: true
   copy_file 'app/assets/stylesheets/layout.css.erb', force: true
 
-  generate(:controller, 'static home')
-
   copy_file 'app/controllers/users/omniauth_callbacks_controller.rb'
 
   create_file 'Procfile' do
@@ -43,6 +41,7 @@ def apply_template
   create_file '.env'
 
   after_bundle do
+    generate(:controller, 'static home')
     devise_user
     add_routes
     add_tests
